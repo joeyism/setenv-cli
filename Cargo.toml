@@ -1,6 +1,6 @@
 [package]
 name = "setenv-cli"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["joeyism <joeyism101@gmail.com>"]
 description = "A CLI tool for managing environment variable profiles with seamless shell integration"
@@ -10,6 +10,10 @@ homepage = "https://github.com/joeyism/setenv-cli"
 readme = "README.md"
 keywords = ["cli", "environment", "env", "shell", "profile"]
 categories = ["command-line-utilities", "development-tools"]
+
+[[bin]]
+name = "setenv"
+path = "src/main.rs"
 
 [dependencies]
 anyhow = "1.0.100"

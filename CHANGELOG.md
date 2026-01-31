@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `setenv new <profile>` command to create new empty profiles
+- `setenv add <profile> <KEY> <VALUE>` command to add variables to profiles
+- Binary name is now `setenv` (package name remains `setenv-cli`)
+- Help descriptions for all commands
+
 ## [0.1.0] - 2026-01-31
 
 ### Added

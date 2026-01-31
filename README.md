@@ -192,6 +192,31 @@ setenv edit
 
 Opens the config file in your `$EDITOR` (falls back to vim, vi, or nano).
 
+### Create a new profile
+
+```bash
+setenv new <profile-name>
+```
+
+Creates a new empty profile. Example:
+
+```bash
+setenv new production
+```
+
+### Add a variable to a profile
+
+```bash
+setenv add <profile-name> <KEY> <VALUE>
+```
+
+Adds or updates a variable in an existing profile. Example:
+
+```bash
+setenv add production API_KEY "prod-api-key-123"
+setenv add production DB_HOST "prod.database.com"
+```
+
 ## How It Works
 
 ### Clean Profile Switching
