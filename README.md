@@ -16,9 +16,57 @@ A CLI tool for managing environment variable profiles with seamless shell integr
 - **Simple configuration**: TOML-based config file in `~/.setenv/config.toml`
 - **No environment pollution**: Only manages variables it sets, leaves your other env vars untouched
 
-## Installation
+## Quick Install
 
-### Option 1: Install from crates.io (Recommended)
+### Automatic (Recommended)
+
+```bash
+# 1. Install the binary
+cargo install setenv-cli
+
+# 2. Run the automatic wrapper installer
+curl -fsSL https://raw.githubusercontent.com/joeyism/setenv-cli/master/install-wrapper.sh | bash
+
+# 3. Reload your shell (or restart terminal)
+source ~/.bashrc  # or ~/.zshrc for zsh
+```
+
+### Manual
+
+**For bash/zsh users:**
+
+```bash
+# 1. Install the binary
+cargo install setenv-cli
+
+# 2. Add wrapper function to ~/.bashrc (or ~/.zshrc)
+cat >> ~/.bashrc << 'EOF'
+
+# setenv shell wrapper
+setenv() {
+    if [ $# -eq 0 ] || [ "$1" = "list" ] || [ "$1" = "current" ] || [ "$1" = "edit" ] || [ "$1" = "new" ] || [ "$1" = "add" ] || [ "$1" = "help" ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+        command setenv "$@"
+    else
+        eval "$(command setenv "$@")"
+    fi
+}
+EOF
+
+# 3. Reload your shell
+source ~/.bashrc
+```
+
+Now you can use: `setenv <profile-name>`</thinking>
+
+
+
+---
+
+## Detailed Installation
+
+### Step 1: Install the binary
+
+#### Option A: Install from crates.io (Recommended)
 
 If you have Rust installed:
 
@@ -26,7 +74,7 @@ If you have Rust installed:
 cargo install setenv-cli
 ```
 
-### Option 2: Download pre-built binary
+#### Option B: Download pre-built binary
 
 Download the latest release for your platform from the [releases page](https://github.com/joeyism/setenv-cli/releases):
 
@@ -47,7 +95,7 @@ sudo chmod +x /usr/local/bin/setenv
 # Move setenv-windows-amd64.exe to a directory in your PATH
 ```
 
-### Option 3: Build from source
+#### Option C: Build from source
 
 ```bash
 git clone https://github.com/joeyism/setenv-cli.git
@@ -56,9 +104,11 @@ cargo build --release
 sudo cp target/release/setenv /usr/local/bin/
 ```
 
-### Set up the shell wrapper
+### Step 2: Set up the shell wrapper (REQUIRED)
 
-The tool requires a shell wrapper function to eval the output. Choose your shell:
+⚠️ **Important:** Without this step, `setenv` will only print commands but won't actually set variables.
+
+The tool outputs shell commands that need to be evaluated in your current shell. Add this wrapper function to your shell config:
 
 #### Bash
 
@@ -72,7 +122,7 @@ Or copy the function directly:
 
 ```bash
 setenv() {
-    if [ "$1" = "list" ] || [ "$1" = "current" ] || [ "$1" = "edit" ]; then
+    if [ $# -eq 0 ] || [ "$1" = "list" ] || [ "$1" = "current" ] || [ "$1" = "edit" ] || [ "$1" = "new" ] || [ "$1" = "add" ] || [ "$1" = "help" ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
         command setenv "$@"
     else
         eval "$(command setenv "$@")"
@@ -100,7 +150,8 @@ Or copy the function directly:
 
 ```fish
 function setenv
-    if test "$argv[1]" = "list"; or test "$argv[1]" = "current"; or test "$argv[1]" = "edit"
+    set -l cmd $argv[1]
+    if test (count $argv) -eq 0; or test "$cmd" = "list"; or test "$cmd" = "current"; or test "$cmd" = "edit"; or test "$cmd" = "new"; or test "$cmd" = "add"; or test "$cmd" = "help"; or test "$cmd" = "--help"; or test "$cmd" = "-h"
         command setenv $argv
     else
         eval (command setenv $argv)
@@ -151,6 +202,8 @@ NODE_ENV = "development"
 - Cannot contain spaces or special characters
 
 ## Usage
+
+> **⚠️ Before using:** Make sure you've completed both installation steps (binary + shell wrapper). If you only installed the binary, variables won't actually be set. See [Troubleshooting](#variables-not-persisting--only-seeing-export-commands) if you're seeing export commands instead of set variables.
 
 ### Switch to a profile
 
@@ -276,9 +329,35 @@ setenv list    # See available profiles
 setenv edit    # Edit config if needed
 ```
 
-### Variables not persisting
+### Variables not persisting / Only seeing export commands
 
-Make sure you're using the shell wrapper function, not calling the binary directly. The wrapper uses `eval` to execute the commands in your current shell.
+**Symptom:** When you run `setenv <profile>`, you see output like:
+```bash
+export API_KEY="value"
+export DB_HOST="localhost"
+...
+```
+But the variables aren't actually set in your shell.
+
+**Cause:** You haven't set up the shell wrapper function (Step 2 of installation).
+
+**Solution:** Add the wrapper function to your shell config and reload:
+
+```bash
+# For bash, add to ~/.bashrc:
+setenv() {
+    if [ $# -eq 0 ] || [ "$1" = "list" ] || [ "$1" = "current" ] || [ "$1" = "edit" ] || [ "$1" = "new" ] || [ "$1" = "add" ] || [ "$1" = "help" ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+        command setenv "$@"
+    else
+        eval "$(command setenv "$@")"
+    fi
+}
+
+# Then reload
+source ~/.bashrc
+```
+
+The wrapper is **required** because the binary can only output commands - it can't directly modify your shell's environment. The wrapper uses `eval` to execute those commands in your current shell.
 
 ### Config file errors
 

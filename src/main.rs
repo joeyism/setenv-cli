@@ -51,6 +51,10 @@ fn main() {
 }
 
 fn run() -> Result<()> {
+    if std::env::args().len() == 1 {
+        return cmd_no_args();
+    }
+
     let cli = Cli::parse();
 
     match cli.command {
@@ -67,8 +71,7 @@ fn run() -> Result<()> {
             if let Some(profile_name) = cli.profile {
                 cmd_switch(&profile_name)
             } else {
-                Cli::parse_from(["setenv", "--help"]);
-                Ok(())
+                cmd_no_args()
             }
         }
     }
@@ -107,6 +110,33 @@ fn cmd_switch(profile_name: &str) -> Result<()> {
     let new_var_names: Vec<String> = profile.env_vars.keys().map(|s| s.to_string()).collect();
     let vars_list = new_var_names.join(" ");
     println!("{}", shell.export_var("SETENV_VARS", &vars_list));
+
+    Ok(())
+}
+
+fn cmd_no_args() -> Result<()> {
+    let config = Config::load()?;
+    let current_profile = env::var("SETENV_PROFILE").ok();
+
+    println!("setenv - Environment variable profile manager\n");
+
+    println!("Available profiles:");
+    for name in config.profile_names() {
+        if Some(name.to_string()) == current_profile {
+            println!("  * {} (active)", name);
+        } else {
+            println!("    {}", name);
+        }
+    }
+
+    println!("\nQuick start:");
+    println!("  setenv <profile>     Switch to a profile");
+    println!("  setenv list          List all profiles");
+    println!("  setenv new <name>    Create a new profile");
+    println!("  setenv add <profile> <KEY> <VALUE>");
+    println!("                       Add a variable to a profile");
+    println!("  setenv edit          Edit config file");
+    println!("  setenv --help        Show detailed help");
 
     Ok(())
 }

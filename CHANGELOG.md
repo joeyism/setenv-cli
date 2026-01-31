@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `setenv add <profile> <KEY> <VALUE>` command to add variables to profiles
 - Binary name is now `setenv` (package name remains `setenv-cli`)
 - Help descriptions for all commands
+- Automatic shell wrapper installer script (`install-wrapper.sh`)
+- Quick install guide in README
+
+### Changed
+- Improved README with prominent warnings about shell wrapper requirement
+- Enhanced troubleshooting section with detailed wrapper setup instructions
+
+### Fixed
+- Removed needless borrow in help command to pass clippy checks
 
 ## [0.1.0] - 2026-01-31
 
