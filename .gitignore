@@ -1,0 +1,31 @@
+# Rust build artifacts
+/target/
+**/*.rs.bk
+*.pdb
+
+# Cargo.lock
+# This is a binary, so we COMMIT Cargo.lock for reproducible builds
+# (Only libraries should ignore Cargo.lock)
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# OpenCode/AI assistant files
+.sisyphus/
+.opencode/
+
+# Local test configs (don't commit personal env vars)
+test-config.toml
+local.toml
+
+# Backup files
+*.bak
+*.backup

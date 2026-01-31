@@ -1,0 +1,19 @@
+[package]
+name = "setenv-cli"
+version = "0.1.0"
+edition = "2021"
+authors = ["joeyism <joeyism101@gmail.com>"]
+description = "A CLI tool for managing environment variable profiles with seamless shell integration"
+license = "MIT"
+repository = "https://github.com/joeyism/setenv-cli"
+homepage = "https://github.com/joeyism/setenv-cli"
+readme = "README.md"
+keywords = ["cli", "environment", "env", "shell", "profile"]
+categories = ["command-line-utilities", "development-tools"]
+
+[dependencies]
+anyhow = "1.0.100"
+clap = { version = "4.5.56", features = ["derive"] }
+dirs = "6.0.0"
+serde = { version = "1.0.228", features = ["derive"] }
+toml = "0.9.11"
